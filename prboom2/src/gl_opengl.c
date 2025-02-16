@@ -133,6 +133,39 @@ void gld_InitOpenGLVersion(void)
   sscanf((const char*) glGetString(GL_VERSION), "%d.%d", &gl_major_version, &gl_minor_version);
 }
 
+#ifdef __ANDROID__
+#include <dlfcn.h>
+static void * GetProcAddress(const char* name)
+{
+
+	static void *glesLib = NULL;
+
+	if(!glesLib)
+	{
+		int flags = RTLD_LOCAL | RTLD_NOW;
+
+		glesLib = dlopen("libGL4ES.so", flags);
+	}
+
+	void * ret = NULL;
+	ret =  dlsym(glesLib, name);
+
+	if(!ret)
+	{
+		//LOGI("Failed to load: %s", name);
+	}
+	else
+	{
+		//LOGI("Loaded %s func OK", name);
+	}
+
+	return ret;
+}
+
+#define SDL_GL_GetProcAddress GetProcAddress
+
+#endif
+
 void gld_InitOpenGL(void)
 {
   GLenum texture;
@@ -189,6 +222,10 @@ void gld_InitOpenGL(void)
   // EXT_framebuffer_object
   //
   gl_ext_framebuffer_object = isExtensionSupported("GL_EXT_framebuffer_object") != NULL;
+
+#ifdef __ANDROID__ // Breaks depth
+  gl_ext_framebuffer_object = 0;
+#endif
 
   if (gl_ext_framebuffer_object)
   {

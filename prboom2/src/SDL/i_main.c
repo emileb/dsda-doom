@@ -263,7 +263,11 @@ void I_SetProcessPriority(void)
 }
 
 //int main(int argc, const char * const * argv)
+#ifdef __ANDROID__
+int main_android(int argc, char **argv)
+#else
 int main(int argc, char **argv)
+#endif
 {
   dsda_ParseCommandLineArgs(argc, argv);
 
@@ -315,6 +319,8 @@ int main(int argc, char **argv)
   I_AtExit(I_EssentialQuit, true, "I_EssentialQuit", exit_priority_first);
   I_AtExit(I_Quit, false, "I_Quit", exit_priority_last);
 #ifndef PRBOOM_DEBUG
+
+#ifndef __ANDROID__
   if (!dsda_Flag(dsda_arg_sigsegv))
   {
     signal(SIGSEGV, I_SignalHandler);
@@ -322,6 +328,8 @@ int main(int argc, char **argv)
   signal(SIGFPE,  I_SignalHandler);
   signal(SIGILL,  I_SignalHandler);
   signal(SIGABRT, I_SignalHandler);
+#endif
+
 
   signal(SIGTERM, I_IntHandler);
   signal(SIGINT,  I_IntHandler);

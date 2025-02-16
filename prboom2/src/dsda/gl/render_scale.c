@@ -37,6 +37,9 @@ int gl_letterbox_clear_required = 0;
 static int gl_clear_box_width;
 static int gl_clear_box_height;
 
+extern int game_screen_width; // Game screen size, could be smaller than above due to framebuffer
+extern int game_screen_height;
+
 
 void dsda_GLSetRenderViewportParams() {
   extern SDL_Rect viewport_rect;

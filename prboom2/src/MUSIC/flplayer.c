@@ -66,6 +66,7 @@ const music_player_t fl_player =
 
 #else // HAVE_LIBFLUIDSYNTH
 
+enum { FLUID_FAILED = -1, FLUID_OK = 0 };
 #include <fluidsynth.h>
 #include <stdlib.h>
 #include <string.h>
@@ -288,7 +289,7 @@ static int fl_init (int samplerate)
       filename = I_FindFile2(snd_soundfont, ".sf2");
       f_font = fluid_synth_sfload (f_syn, filename, 1);
     }
-
+#ifndef __ANDROID__
     if ((!checked_file || f_font == FLUID_FAILED) && lumpnum >= 0)
     {
       fluid_sfloader_t *sfloader;
@@ -300,7 +301,7 @@ static int fl_init (int samplerate)
       fluid_synth_add_sfloader(f_syn, sfloader);
       f_font = fluid_synth_sfload(f_syn, "SNDFONT", 1);
     }
-
+#endif
     if (!checked_f_font)
     {
       lprintf(LO_WARN, "fl_init: no soundfont detected!\n");

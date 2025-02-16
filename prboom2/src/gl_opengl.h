@@ -50,7 +50,13 @@
 #include <glu.h>	/* Header File For The GLU Library */
 #else
 #include <GL/gl.h>	/* Header File For The OpenGL Library */
+
+#ifdef __ANDROID__
+#include <MOBILE/glutess/glutess.h>
+#else
 #include <GL/glu.h>	/* Header File For The GLU Library */
+#endif
+
 #endif
 #endif
 

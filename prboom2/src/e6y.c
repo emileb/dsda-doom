@@ -292,6 +292,9 @@ void M_ChangeSkyMode(void)
     gl_drawskys = (dsda_FreeAim() ? skytype_skydome : skytype_standard);
   else
     gl_drawskys = gl_skymode;
+#ifdef __ANDROID__
+ gl_drawskys = skytype_skydome; // Other sky types do not work
+#endif
 }
 
 static const int upViewPitchLimit = -ANG90 + (1 << ANGLETOFINESHIFT);

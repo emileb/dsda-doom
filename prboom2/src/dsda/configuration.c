@@ -749,7 +749,7 @@ dsda_config_t dsda_config[dsda_config_count] = {
   },
   [dsda_config_snd_soundfont] = {
     "snd_soundfont", dsda_config_snd_soundfont,
-    CONF_STRING("")
+    CONF_STRING("./audiopack/snd_fluidsynth/fluidsynth.sf2")
   },
   [dsda_config_mus_fluidsynth_chorus] = {
     "mus_fluidsynth_chorus", dsda_config_mus_fluidsynth_chorus,

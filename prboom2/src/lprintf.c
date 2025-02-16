@@ -66,6 +66,11 @@ int cons_stderr_mask = LO_WARN | LO_ERROR;
  */
 #define MAX_MESSAGE_SIZE 2048
 
+#ifdef __ANDROID__
+#include <android/log.h>
+#include "LogWritter.h"
+#endif
+
 int lprintf(OutputLevels pri, const char *s, ...)
 {
   int r=0;
@@ -76,6 +81,15 @@ int lprintf(OutputLevels pri, const char *s, ...)
   va_start(v,s);
   vsnprintf(msg,sizeof(msg),s,v);    /* print message in buffer  */
   va_end(v);
+
+
+#ifdef __ANDROID__
+    if (lvl&cons_stderr_mask)
+        __android_log_print(ANDROID_LOG_ERROR,"PrBoom","%s",msg);
+    else
+        __android_log_print(ANDROID_LOG_INFO,"PrBoom","%s",msg);
+    LogWritter_Write(msg);
+#endif
 
 #ifdef _WIN32
   // do not crash with unicode dirs

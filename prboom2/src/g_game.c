@@ -505,6 +505,10 @@ static void G_ConvertAnalogMotion(int speed, int *forward, int *side)
   }
 }
 
+#ifdef __ANDROID__
+void Mobile_IN_Move(ticcmd_t* cmd );
+#endif
+
 void G_BuildTiccmd(ticcmd_t* cmd)
 {
   int strafe;
@@ -1042,6 +1046,10 @@ void G_BuildTiccmd(ticcmd_t* cmd)
   else
     cmd->angleturn -= mousex; /* mead now have enough dynamic range 2-10-00 */
 
+#ifdef __ANDROID__
+    Mobile_IN_Move( cmd );
+#endif
+
   G_ConvertAnalogMotion(speed, &forward, &side);
 
   if (!walkcamera.type || menuactive) //e6y
@@ -1472,6 +1480,11 @@ void G_Ticker (void)
   static gamestate_t prevgamestate;
 
   entry_leveltime = leveltime;
+
+#ifdef __ANDROID__
+    void Android_SendKeys( void );
+    Android_SendKeys();
+#endif
 
   // CPhipps - player colour changing
   if (!demoplayback && mapcolor.plyr[consoleplayer] != mapcolor.me) {
