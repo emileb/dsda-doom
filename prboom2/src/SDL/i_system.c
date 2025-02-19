@@ -312,6 +312,18 @@ const char* I_GetTempDir(void)
 
 static const char *I_GetHomeDir(void)
 {
+
+#ifdef __ANDROID__
+    static char base[256];
+    if (!base)        // cache multiple requests
+    {
+      base = malloc(200);
+      char *home = M_getenv("USER_FILES");
+      snprintf(base, 200, "%s/dsda", home);
+    }
+    return base;
+#endif
+
   const char *home = M_getenv("HOME");
 
   if (!home)
@@ -370,6 +382,12 @@ const char *I_ConfigDir(void)
 
   if (!base)
   {
+
+#ifdef __ANDROID__
+    base = I_GetHomeDir();
+    M_MakeDir(base, false);
+    return base;
+#endif
     const char *home = I_GetHomeDir();
 
     // First, try legacy directory.
@@ -385,6 +403,7 @@ const char *I_ConfigDir(void)
       base = dsda_ConcatDir(I_GetXDGDataHome(), "dsda-doom");
 #endif
     }
+#endif
 
     M_MakeDir(base, false);
   }

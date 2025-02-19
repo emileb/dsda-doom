@@ -118,7 +118,11 @@ void SetFrameTextureMode(void)
 }
 
 const int gl_colorbuffer_bits = 32;
+#ifdef __ANDROID__
+const int gl_depthbuffer_bits = 16;
+#else
 const int gl_depthbuffer_bits = 24;
+#endif
 int gl_render_multisampling;
 
 void gld_MultisamplingInit(void)
@@ -197,7 +201,9 @@ void gld_Init(int width, int height)
   glClearDepth(1.0f);
 
   glEnable(GL_BLEND);
+#ifndef __ANDROID__
   glEnable(GL_DEPTH_CLAMP_NV);
+#endif
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // proff_dis
@@ -790,7 +796,7 @@ void gld_DrawWeapon(int weaponlump, vissprite_t *vis, int lightlevel)
 
   gltexture=gld_RegisterPatch(firstspritelump+weaponlump, CR_DEFAULT, false, true);
   if (!gltexture)
-    return;
+      return;
   gld_BindPatch(gltexture, CR_DEFAULT);
   fU1=0;
   fV1=0;
@@ -821,16 +827,16 @@ void gld_DrawWeapon(int weaponlump, vissprite_t *vis, int lightlevel)
     else
       gld_StaticLight(light);
   }
-  glBegin(GL_TRIANGLE_STRIP);
+    glBegin(GL_TRIANGLE_STRIP);
   glTexCoord2f(fU1, fV1);
-  glVertex2f(x1, y1);
+    glVertex2f(x1, y1);
   glTexCoord2f(fU1, fV2);
-  glVertex2f(x1, y2);
+    glVertex2f(x1, y2);
   glTexCoord2f(fU2, fV1);
-  glVertex2f(x2, y1);
+    glVertex2f(x2, y1);
   glTexCoord2f(fU2, fV2);
-  glVertex2f(x2, y2);
-  glEnd();
+    glVertex2f(x2, y2);
+    glEnd();
   if(!vis->colormap)
   {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

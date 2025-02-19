@@ -6,7 +6,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := dsda
 
-LOCAL_CFLAGS :=  -DGL_DOOM  -DENGINE_NAME=\"dsda\" -fsigned-char  -DHAVE_CONFIG_H -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DDSDA_DOOM
+LOCAL_CFLAGS := -DGL_DOOM  -DENGINE_NAME=\"dsda\" -fsigned-char  -DHAVE_CONFIG_H -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DDSDA_DOOM
 
 
 LOCAL_C_INCLUDES :=     $(SDL_INCLUDE_PATHS)  \

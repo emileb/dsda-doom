@@ -181,9 +181,11 @@ void gld_InitOpenGL(void)
 
   // Any textures sizes are allowed
   gl_arb_texture_non_power_of_two = isExtensionSupported("GL_ARB_texture_non_power_of_two") != NULL;
+
+#ifndef __ANDROID__ //Resample for npot
   if (!gl_arb_texture_non_power_of_two)
     I_Error("gld_InitOpenGL: OpenGL driver does not support GL_ARB_texture_non_power_of_two");
-
+#endif
   //
   // ARB_multitexture command function pointers
   //

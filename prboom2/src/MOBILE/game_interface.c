@@ -115,6 +115,9 @@ void PortableAction(int state, int action)
 			PortableKeyEvent(state, sdl_code[action-PORT_ACT_MENU_UP],0);
 			return;
 		}
+        else if(action == PORT_ACT_ATTACK) {
+            ActivateKey(state, dsda_input_fire);
+        }
 	}
 	else
 	{
@@ -313,28 +316,24 @@ void PortableInit(int argc,const char ** argv){
 
 
 extern  menuactive_t menuactive; // Type of menu overlaid, if any
-extern dboolean         demoplayback;
-extern enum automapmode_e automapmode;
-extern dboolean         usergame;
+extern dboolean      demoplayback;
+extern int           automap_active;
+extern  gamestate_t  gamestate;
 touchscreemode_t PortableGetScreenMode()
 {
     if( menuactive )
         return TS_MENU;
     else
-        return TS_GAME;
-    /*
     {
-        if (automapmode & am_active)
+        if (automap_active)
             return TS_MAP;
-            //return TS_GAME;
-        else if( usergame )
-            return TS_GAME;
         else if(demoplayback)
             return TS_DEMO;
+        else if( gamestate ==  GS_LEVEL)
+            return TS_GAME;
         else
             return TS_BLANK;
     }
-     */
 }
 
 void Mobile_AM_controls(double *zoom, fixed_t *pan_x, fixed_t *pan_y )
@@ -388,23 +387,5 @@ void Mobile_IN_Move(ticcmd_t* cmd )
         look_yaw_mouse = 0;
         cmd->angleturn += look_yaw_joy * 1000;
     }
-/*
-	if (newweapon != wp_nochange)
-	{
-		const player_t *player = &players[consoleplayer];
-
-		if (newweapon == wp_shotgun && gamemode == commercial &&
-				player->weaponowned[wp_supershotgun] &&
-				(!player->weaponowned[wp_shotgun] ||
-						player->readyweapon == wp_shotgun ||
-						(player->readyweapon != wp_supershotgun &&
-								P_WeaponPreferred(wp_supershotgun, wp_shotgun))))
-			newweapon = wp_supershotgun;
-
-		cmd->buttons |= BT_CHANGE;
-		cmd->buttons |= newweapon<<BT_WEAPONSHIFT;
-		newweapon = wp_nochange;
-	}
- */
 }
 

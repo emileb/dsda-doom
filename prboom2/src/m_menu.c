@@ -6222,12 +6222,19 @@ void M_ChangeMenu(menu_t *menudef, menuactive_t mnact)
   if (mnact > mnact_inactive && gamestate == GS_LEVEL)
     dsda_TrackFeature(uf_menu);
 
+  static bool textStarted = false;
+
   if (SDL_IsTextInputActive()) {
     if (!(currentMenu && currentMenu->flags & MENUF_TEXTINPUT))
-      SDL_StopTextInput();
+        if(textStarted) {
+            SDL_StopTextInput();
+            textStarted = false;
+        }
   }
-  else if (currentMenu && currentMenu->flags & MENUF_TEXTINPUT)
-    SDL_StartTextInput();
+  else if (currentMenu && currentMenu->flags & MENUF_TEXTINPUT) {
+      SDL_StartTextInput();
+      textStarted = true;
+  }
 }
 
 //

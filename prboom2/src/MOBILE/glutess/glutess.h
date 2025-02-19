@@ -41,9 +41,11 @@
 #ifndef __glu_h__
 #define __glu_h__
 
+#undef GLAPIENTRYP
 #define GLAPIENTRYP *
 #undef GLAPIENTRY
 #define GLAPIENTRY
+#undef GLAPI
 #define GLAPI
 
 typedef int GLint;

@@ -37,8 +37,10 @@ int gl_letterbox_clear_required = 0;
 static int gl_clear_box_width;
 static int gl_clear_box_height;
 
+#ifdef __ANDROID__
 extern int game_screen_width; // Game screen size, could be smaller than above due to framebuffer
 extern int game_screen_height;
+#endif
 
 
 void dsda_GLSetRenderViewportParams() {
