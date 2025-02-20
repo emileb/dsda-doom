@@ -6,8 +6,12 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := dsda
 
-LOCAL_CFLAGS := -DGL_DOOM  -DENGINE_NAME=\"dsda\" -fsigned-char  -DHAVE_CONFIG_H -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DDSDA_DOOM
+LOCAL_CFLAGS :=  -DGL_DOOM  -DENGINE_NAME=\"dsda\" -fsigned-char  -DHAVE_CONFIG_H -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DDSDA_DOOM
 
+# Fixes SIGILL ion 32bit, can not debug properly to find the cause so use this hack
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+ LOCAL_CFLAGS += -O1
+endif
 
 LOCAL_C_INCLUDES :=     $(SDL_INCLUDE_PATHS)  \
                         $(TOP_DIR) \
