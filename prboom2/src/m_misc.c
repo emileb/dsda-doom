@@ -409,8 +409,13 @@ cfg_input_def_t input_defs[] = {
   INPUT_SETTING("input_weapon7", dsda_input_weapon7, '7', -1, -1),
   INPUT_SETTING("input_weapon8", dsda_input_weapon8, '8', -1, -1),
   INPUT_SETTING("input_weapon9", dsda_input_weapon9, '9', -1, -1),
+#ifdef __ANDROID__
+  INPUT_SETTING("input_nextweapon", dsda_input_nextweapon, '[', -1, DSDA_CONTROLLER_BUTTON_Y),
+  INPUT_SETTING("input_prevweapon", dsda_input_prevweapon, ']', -1, DSDA_CONTROLLER_BUTTON_X),
+#else
   INPUT_SETTING("input_nextweapon", dsda_input_nextweapon, 0, -1, DSDA_CONTROLLER_BUTTON_Y),
   INPUT_SETTING("input_prevweapon", dsda_input_prevweapon, 0, -1, DSDA_CONTROLLER_BUTTON_X),
+#endif
   INPUT_SETTING("input_toggleweapon", dsda_input_toggleweapon, '0', -1, -1),
   INPUT_SETTING("input_fire", dsda_input_fire, KEYD_RCTRL, 0, DSDA_CONTROLLER_BUTTON_TRIGGERRIGHT),
 
