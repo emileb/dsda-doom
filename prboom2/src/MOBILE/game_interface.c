@@ -56,6 +56,7 @@ void PortableBackButton()
     PortableKeyEvent(0, KEYD_ESCAPE,0);
 }
 
+uint32_t DSDA_GAME_TICKER = 0;
 event_t event;
 void Android_SendKeys( void )
 {
@@ -75,6 +76,7 @@ void Android_SendKeys( void )
 
 		events_used++;
 	}
+    DSDA_GAME_TICKER++;
 }
 
 extern int dsda_input_profile;
