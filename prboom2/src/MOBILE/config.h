@@ -27,7 +27,7 @@
 /* #undef HAVE_LIBMAD */
 #define  HAVE_LIBFLUIDSYNTH
 /* #undef HAVE_LIBDUMB */
-#define HAVE_LIBVORBISFILE
+// #define HAVE_LIBVORBISFILE
 // #define HAVE_LIBPORTMIDI
 
 

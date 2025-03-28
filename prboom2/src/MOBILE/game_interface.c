@@ -230,6 +230,15 @@ void PortableAction(int state, int action)
         case PORT_ACT_GAMMA:
             ActivateKey(state, dsda_input_gamma);
             break;
+        case PORT_ACT_INVUSE:
+            ActivateKey(state, dsda_input_use_artifact);
+            break;
+        case PORT_ACT_INVPREV:
+            ActivateKey(state, dsda_input_invleft);
+            break;
+        case PORT_ACT_INVNEXT:
+            ActivateKey(state, dsda_input_invright);
+            break;
 		}
 	}
 }

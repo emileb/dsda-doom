@@ -440,6 +440,11 @@ void I_StartTic (void)
 {
   I_GetEvent();
 
+#ifdef __ANDROID__
+    void Android_SendKeys( void );
+    Android_SendKeys();
+#endif
+
   if (dsda_AllowMouse())
     I_ReadMouse();
 

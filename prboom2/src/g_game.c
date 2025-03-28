@@ -1481,10 +1481,7 @@ void G_Ticker (void)
 
   entry_leveltime = leveltime;
 
-#ifdef __ANDROID__
-    void Android_SendKeys( void );
-    Android_SendKeys();
-#endif
+
 
   // CPhipps - player colour changing
   if (!demoplayback && mapcolor.plyr[consoleplayer] != mapcolor.me) {
