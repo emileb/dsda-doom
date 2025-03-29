@@ -239,6 +239,9 @@ void PortableAction(int state, int action)
         case PORT_ACT_INVNEXT:
             ActivateKey(state, dsda_input_invright);
             break;
+        case PORT_ACT_CONSOLE:
+            ActivateKey(state, dsda_input_console);
+            break;
 		}
 	}
 }

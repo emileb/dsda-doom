@@ -812,7 +812,11 @@ void M_LoadDefaults (void)
     fclose (f);
   }
 
-  Z_Free(strparm);
+#ifdef __ANDROID__
+  dsda_InputAddSpecificKey(0, dsda_input_console, '`');
+#endif
+
+    Z_Free(strparm);
   Z_Free(cfgline);
 
   dsda_ApplyAdHocConfiguration();
