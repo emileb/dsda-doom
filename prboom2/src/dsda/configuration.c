@@ -1162,7 +1162,7 @@ dsda_config_t dsda_config[dsda_config_count] = {
   },
   [dsda_config_render_vsync] = {
     "render_vsync", dsda_config_render_vsync,
-    CONF_BOOL(0), NULL, NOT_STRICT, M_ChangeVideoMode
+    CONF_BOOL(0), NULL, NOT_STRICT, NULL
   },
   [dsda_config_uncapped_framerate] = {
     "uncapped_framerate", dsda_config_uncapped_framerate,
