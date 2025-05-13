@@ -601,7 +601,8 @@ void I_FinishUpdate (void)
     // proff 04/05/2000: swap OpenGL buffers
     gld_Finish();
 #ifdef __ANDROID__
-    gld_BindTexture(NULL,0);
+    void gld_BindTexture(void *gltexture, unsigned int flags, dboolean sky);
+    gld_BindTexture(NULL, 0, false);
 #endif
     return;
   }
@@ -653,6 +654,7 @@ void I_FinishUpdate (void)
   // Draw!
   SDL_RenderPresent(sdl_renderer);
 #ifdef __ANDROID__ // The touch controls change the viewport, call this to fix. This function does not exist in SDL2
+      int SDL_ForceupdateViewport(SDL_Renderer * renderer);
       SDL_ForceupdateViewport(sdl_renderer);
 #endif
 }
