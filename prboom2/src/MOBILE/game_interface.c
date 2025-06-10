@@ -350,6 +350,15 @@ touchscreemode_t PortableGetScreenMode()
     }
 }
 
+void AndroidSetAutoRun(int run);
+
+bool PortableSetAlwaysRun(bool run)
+{
+    AndroidSetAutoRun(run);
+
+    return false;
+}
+
 void Mobile_AM_controls(double *zoom, fixed_t *pan_x, fixed_t *pan_y )
 {
 	if (am_zoom)

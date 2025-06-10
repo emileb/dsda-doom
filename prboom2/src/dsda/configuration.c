@@ -1336,6 +1336,13 @@ dsda_config_t dsda_config[dsda_config_count] = {
   },
 };
 
+
+#ifdef __ANDROID__
+void AndroidSetAutoRun(int run)
+{
+     dsda_config[dsda_config_autorun].transient_value.v_int = run;
+}
+#endif
 static void dsda_PersistIntConfig(dsda_config_t* conf) {
   conf->persistent_value.v_int = conf->transient_value.v_int;
 }
