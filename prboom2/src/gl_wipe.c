@@ -49,6 +49,11 @@
 static GLuint wipe_scr_start_tex = 0;
 static GLuint wipe_scr_end_tex = 0;
 
+#ifdef __ANDROID__
+extern int game_screen_width;
+extern int game_screen_height;
+#endif
+
 GLuint CaptureScreenAsTexID(void)
 {
   GLuint id;
@@ -69,7 +74,7 @@ GLuint CaptureScreenAsTexID(void)
 
 #ifdef __ANDROID__
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-    gld_GetTexDimension(gl_viewport_width), gld_GetTexDimension(gl_viewport_height),
+    gld_GetTexDimension(game_screen_width), gld_GetTexDimension(game_screen_height),
     0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 #else
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,

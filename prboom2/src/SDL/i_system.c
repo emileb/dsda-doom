@@ -317,7 +317,6 @@ static const char *I_GetHomeDir(void)
     static char base[256];
     if (!base)        // cache multiple requests
     {
-      base = malloc(200);
       char *home = M_getenv("USER_FILES");
       snprintf(base, 200, "%s/dsda", home);
     }
@@ -403,7 +402,6 @@ const char *I_ConfigDir(void)
       base = dsda_ConcatDir(I_GetXDGDataHome(), "dsda-doom");
 #endif
     }
-#endif
 
     M_MakeDir(base, false);
   }

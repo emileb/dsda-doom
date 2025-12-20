@@ -94,10 +94,12 @@ void *Load_SNDFile(const void *data, SDL_AudioSpec *sample, void **sampledata,
     case SF_FORMAT_FLOAT:
     case SF_FORMAT_DOUBLE:
     case SF_FORMAT_VORBIS:
+#ifndef __ANDROID__
     case SF_FORMAT_OPUS:
     case SF_FORMAT_ALAC_20:
     case SF_FORMAT_ALAC_24:
     case SF_FORMAT_ALAC_32:
+#endif
 #ifdef HAVE_SNDFILE_MPEG
     case SF_FORMAT_MPEG_LAYER_I:
     case SF_FORMAT_MPEG_LAYER_II:

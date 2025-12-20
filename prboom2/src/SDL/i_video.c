@@ -1462,7 +1462,9 @@ void I_UpdateVideoMode(void)
 
 static void ActivateMouse(void)
 {
+#ifndef __ANDROID__ // Prevent it moving randomly at the start
   SDL_SetRelativeMouseMode(SDL_TRUE);
+#endif
   SDL_GetRelativeMouseState(NULL, NULL);
 }
 

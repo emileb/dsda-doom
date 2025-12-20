@@ -6,7 +6,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := dsda
 
-LOCAL_CFLAGS :=  -DGL_DOOM  -DENGINE_NAME=\"dsda\" -fsigned-char  -DHAVE_CONFIG_H -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DDSDA_DOOM
+LOCAL_CFLAGS :=  -DGL_DOOM  -DENGINE_NAME=\"dsda\" -fsigned-char  -DHAVE_CONFIG_H -Dstricmp=strcasecmp -Dstrnicmp=strncasecmp -DDSDA_DOOM -DPROJECT_STRING=\"DSDA\" -DPROJECT_TARNAME=\"dsda-doom\" -DPROJECT_NAME=\"DSDA\" -DPROJECT_VERSION=\"dev\"
 
 # Fixes SIGILL ion 32bit, can not debug properly to find the cause so use this hack
 ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
@@ -23,6 +23,7 @@ LOCAL_C_INCLUDES :=     $(SDL_INCLUDE_PATHS)  \
                         $(TOP_DIR)/gl4es/include \
                         $(TOP_DIR)/AudioLibs_OpenTouch/fluidsynth/include \
                         $(TOP_DIR)/AudioLibs_OpenTouch/liboggvorbis/include \
+                        $(TOP_DIR)/AudioLibs_OpenTouch/libsndfile-android/jni/ \
                         $(TOP_DIR)/Doom/dsda-doom/prboom2/src/MOBILE/libtess/
 
 
@@ -151,6 +152,7 @@ COMMON_SRC = \
     dsda/utility/string_view.c \
     dsda/wad_stats.c \
     dsda/zipfile.c \
+    dsda/gameinfo.cpp \
     dstrings.c \
     d_deh.c \
     d_items.c \
@@ -251,12 +253,12 @@ MUS2MID_SRC = \
 SDLDOOM_SOURCES = \
     SDL/i_main.c \
     SDL/i_sound.c \
+    SDL/i_sndfile.c \
     SDL/i_sshot.c \
     SDL/i_system.c \
     SDL/i_video.c \
 
 DOOMMUSIC_SOURCES = \
-    MUSIC/dumbplayer.c \
     MUSIC/flplayer.c \
     MUSIC/madplayer.c \
     MUSIC/midifile.c \
@@ -266,6 +268,7 @@ DOOMMUSIC_SOURCES = \
     MUSIC/opl_queue.c \
     MUSIC/portmidiplayer.c \
     MUSIC/vorbisplayer.c \
+    MUSIC/xmpplayer.c \
 
 GL_SRC = \
    gl_clipper.c \
@@ -313,7 +316,7 @@ LOCAL_SRC_FILES += \
 
 LOCAL_LDLIBS += -llog -lz -lGLESv1_CM
 
-LOCAL_STATIC_LIBRARIES += fluidsynth-static SDL2_net logwritter zipotg
+LOCAL_STATIC_LIBRARIES += fluidsynth-static SDL2_net logwritter zipotg sndfile
 
 LOCAL_SHARED_LIBRARIES := touchcontrols SDL2 SDL2_mixer SDL2_image core_shared saffal GL4ES ogg vorbis
 
