@@ -315,7 +315,7 @@ static const char *I_GetHomeDir(void)
 
 #ifdef __ANDROID__
     static char base[256];
-    if (!base)        // cache multiple requests
+    if (!base[0])        // cache multiple requests
     {
       char *home = M_getenv("USER_FILES");
       snprintf(base, 200, "%s/dsda", home);

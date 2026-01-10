@@ -322,8 +322,13 @@ void PortableAutomapControl(float zoom, float x, float y)
 
 void PortableCommand(const char * cmd){}
 
-void PortableInit(int argc,const char ** argv){
+extern const char *userFilesPath_c;
 
+void PortableInit(int argc,const char ** argv)
+{
+    char path[256];
+    snprintf(path, sizeof(path), "%s/%s", userFilesPath_c, "dsda");
+    setenv("DOOMDATADIR", path, 1);
 	extern int main_android(int argc, char **argv);
 	main_android(argc, ( char **)argv);
 }
