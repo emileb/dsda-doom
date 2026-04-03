@@ -6,8 +6,12 @@
 #include "m_fixed.h"
 #include "dsda/input.h"
 #include <pthread.h>
+#include <math.h>
 
 #include "game_interface.h"
+#include "../../../../../Clibs_OpenTouch/game_interface.h"
+#include "../../../../../SDL2_OpenTouch/SDL_beloko_extra.h"
+#include "../d_event.h"
 
 // FIFO STUFF ////////////////////
 // Copied from FTEQW, I don't know if this is thread safe, but it's safe enough for a game :)
@@ -21,6 +25,11 @@ struct eventlist_s
 
 volatile int events_avail; /*volatile to make sure the cc doesn't try leaving these cached in a register*/
 volatile int events_used;
+
+//Look up and down
+static float look_pitch_mouse,look_pitch_abs,look_pitch_joy;
+static float look_yaw_mouse,look_yaw_joy;
+
 
 static struct eventlist_s *in_newevent(void)
 {
@@ -76,6 +85,45 @@ void Android_SendKeys( void )
 
 		events_used++;
 	}
+
+    int blockGamepad( void );
+    int blockLook = blockGamepad() & ANALOGUE_AXIS_PITCH;
+
+    const float LOOK_SCALE = 1500;
+    if(fabs(look_pitch_mouse * LOOK_SCALE) > 1)
+    {
+        if(!blockLook)
+        {
+            event.type = ev_mousemotion;
+            event.data1.i = 0;
+            event.data2.i = -(int) (look_pitch_mouse * LOOK_SCALE);
+            D_PostEvent(&event);
+        }
+        look_pitch_mouse -= ((int)(look_pitch_mouse * LOOK_SCALE))/LOOK_SCALE;
+    }
+
+    const float YAM_SCALE = 4000;
+    if(fabs(look_yaw_mouse * YAM_SCALE) > 1)
+    {
+        if(!blockLook)
+        {
+            event.type = ev_mousemotion;
+            event.data1.i = -(int) (look_yaw_mouse * YAM_SCALE);
+            event.data2.i = 0;
+            D_PostEvent(&event);
+        }
+        look_yaw_mouse -= ((int)(look_yaw_mouse * YAM_SCALE)) / YAM_SCALE;
+    }
+
+    if(!blockLook)
+    {
+        event.type = ev_look_analog;
+        event.data1.f = -look_yaw_joy * 1000;
+        event.data2.f = -look_pitch_joy * 1000;
+        if (event.data1.f || event.data2.f)
+            D_PostEvent(&event);
+    }
+
     DSDA_GAME_TICKER++;
 }
 
@@ -242,6 +290,12 @@ void PortableAction(int state, int action)
         case PORT_ACT_CONSOLE:
             ActivateKey(state, dsda_input_console);
             break;
+        case PORT_ACT_FLY_UP:
+            ActivateKey(state, dsda_input_flyup);
+            break;
+        case PORT_ACT_FLY_DOWN:
+            ActivateKey(state, dsda_input_flydown);
+            break;
 		}
 	}
 }
@@ -278,8 +332,6 @@ void PortableMove(float fwd, float strafe)
 
 //======================================================================
 
-//Look up and down
-static float look_pitch_mouse,look_pitch_abs,look_pitch_joy;
 void PortableLookPitch(int mode, float pitch)
 {
 	switch(mode)
@@ -294,7 +346,6 @@ void PortableLookPitch(int mode, float pitch)
 }
 
 //left right
-static float look_yaw_mouse,look_yaw_joy;
 void PortableLookYaw(int mode, float yaw)
 {
 	switch(mode)
@@ -388,7 +439,7 @@ void Mobile_IN_Move(ticcmd_t* cmd )
 {
     int blockGamepad( void );
     int blockMove = blockGamepad() & ANALOGUE_AXIS_FWD;
-    int blockLook = blockGamepad() & ANALOGUE_AXIS_PITCH;
+
 
     if( !blockMove )
     {
@@ -403,17 +454,6 @@ void Mobile_IN_Move(ticcmd_t* cmd )
 
 	    cmd->forwardmove  += fwdSpeed * forwardmove[1];
 	    cmd->sidemove  += sideSpeed  * sidemove[1];
-    }
-
-    if( !blockLook )
-    {
-        mlooky += look_pitch_mouse * 30000;
-        look_pitch_mouse = 0;
-        mlooky += look_pitch_joy * 1000;
-
-        cmd->angleturn += look_yaw_mouse * 80000;
-        look_yaw_mouse = 0;
-        cmd->angleturn += look_yaw_joy * 1000;
     }
 }
 
