@@ -1512,8 +1512,10 @@ static void I_ReadMouse(void)
   if (!mouse_enabled)
     return;
 
+#ifndef __ANDROID__
   //e6y: new mouse code
   UpdateGrab();
+#endif
 
   if (window_focused)
   {
