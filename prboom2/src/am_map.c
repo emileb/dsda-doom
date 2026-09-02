@@ -374,6 +374,10 @@ array_t map_lines;
 
 static void AM_rotate(fixed_t* x,  fixed_t* y, angle_t a);
 
+#ifdef __ANDROID__
+void Mobile_AM_controls(float *zoom, float *pan_x, float *pan_y);
+#endif
+
 static void AM_SetMPointFloatValue(mpoint_t *p)
 {
   if (am_frame.precise)
@@ -690,6 +694,16 @@ static void AM_initVariables(void)
   m_paninc.x = m_paninc.y = 0;
   ftom_zoommul = FRACUNIT;
   mtof_zoommul = FRACUNIT;
+
+#ifdef __ANDROID__
+  {
+    // Touch has no follow key, so every map open starts back on the player
+    float zoom, panx, pany;
+
+    Mobile_AM_controls(&zoom, &panx, &pany);
+    dsda_UpdateIntConfig(dsda_config_automap_follow, true, true);
+  }
+#endif
 
   m_w = FTOM(f_w);
   m_h = FTOM(f_h);
@@ -2848,6 +2862,84 @@ static void AM_setFrameVariables(void)
   am_frame.precise = (V_IsOpenGLMode());
 }
 
+#ifdef __ANDROID__
+//
+// AM_TouchControls()
+//
+// Apply one frame of touch drag/pinch. Both arrive as fractions of the
+// screen, so a drag moves the map exactly as far as the finger travelled.
+//
+// Passed nothing, returns nothing
+//
+static void AM_TouchControls(void)
+{
+  float zoom, panx, pany;
+  fixed_t incx, incy;
+
+  Mobile_AM_controls(&zoom, &panx, &pany);
+
+  if (zoom != 0.0f)
+  {
+    // Multiplicative so a pinch feels the same at any zoom level
+    float f = 1.0f + zoom * 4.0f;
+
+    if (f < 0.25f)
+      f = 0.25f;
+    else if (f > 4.0f)
+      f = 4.0f;
+
+    scale_mtof = FixedMul(scale_mtof, (fixed_t)(f * FRACUNIT));
+    scale_ftom = FixedDiv(FRACUNIT, scale_mtof);
+
+    if (scale_mtof < min_scale_mtof)
+      AM_minOutWindowScale();
+    else if (scale_mtof > max_scale_mtof)
+      AM_maxOutWindowScale();
+    else
+      AM_activateNewScale();
+
+    // Keep the smooth-zoom base in step, it is only refreshed each gametic
+    prev_scale_mtof = scale_mtof;
+  }
+
+  if (panx == 0.0f && pany == 0.0f)
+    return;
+
+  // Follow mode recentres every frame, so a drag can only stick with it off
+  dsda_UpdateIntConfig(dsda_config_automap_follow, false, true);
+
+  // A drag of the full screen covers the full view, m_w / m_h
+  incx = (fixed_t)((double)panx * (double)m_w);
+  incy = -(fixed_t)((double)pany * (double)m_h);
+
+  if (automap_rotate)
+    AM_rotate(&incx, &incy, viewangle - ANG90);
+
+  m_x += incx;
+  m_y += incy;
+
+  if (!automap_rotate)
+  {
+    if (m_x + m_w/2 > max_x)
+      m_x = max_x - m_w/2;
+    else if (m_x + m_w/2 < min_x)
+      m_x = min_x - m_w/2;
+
+    if (m_y + m_h/2 > max_y)
+      m_y = max_y - m_h/2;
+    else if (m_y + m_h/2 < min_y)
+      m_y = min_y - m_h/2;
+  }
+
+  m_x2 = m_x + m_w;
+  m_y2 = m_y + m_h;
+
+  // AM_changeWindowLoc() pans from these, so do not leave them behind
+  prev_m_x = m_x;
+  prev_m_y = m_y;
+}
+#endif
+
 //
 // AM_Drawer()
 //
@@ -2863,6 +2955,11 @@ void AM_Drawer (dboolean minimap)
 
   if (automap_active && automap_overlay == 2 && minimap)
     return;
+
+#ifdef __ANDROID__
+  if (automap_active && !minimap)
+    AM_TouchControls();
+#endif
 
   V_BeginAutomapDraw();
 

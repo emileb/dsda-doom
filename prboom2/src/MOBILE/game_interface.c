@@ -415,18 +415,14 @@ bool PortableSetAlwaysRun(bool run)
     return false;
 }
 
-void Mobile_AM_controls(double *zoom, fixed_t *pan_x, fixed_t *pan_y )
+// Hand the accumulated gestures to the automap as raw screen fractions; only
+// it knows the current zoom level needed to turn them into map units.
+void Mobile_AM_controls(float *zoom, float *pan_x, float *pan_y)
 {
-	if (am_zoom)
-	{
-        *zoom = am_zoom * 10;
-		am_zoom = 0;
-	}
-
-	*pan_x += (fixed_t)(am_pan_x * 20000000);
-	*pan_y += -(fixed_t)(am_pan_y * 10000000);
-	am_pan_x = am_pan_y = 0;
-	//LOGI("zoom = %f",*zoom);
+	*zoom = am_zoom;
+	*pan_x = am_pan_x;
+	*pan_y = am_pan_y;
+	am_zoom = am_pan_x = am_pan_y = 0;
 }
 
 //in g_game.c for max speeds
