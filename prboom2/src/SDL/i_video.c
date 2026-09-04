@@ -128,6 +128,11 @@ SDL_Rect window_rect = { 0, 0, 0, 0 };    // Physical window
 SDL_Rect renderer_rect = { 0, 0, 0, 0 };  // The window, but with HiDPI accounted
 SDL_Rect viewport_rect = { 0, 0, 0, 0 };  // The renderer, but without the black bars
 
+#ifdef __ANDROID__
+extern int game_screen_width; // Size of the OpenTouch framebuffer GL actually renders into
+extern int game_screen_height;
+#endif
+
 ////////////////////////////////////////////////////////////////////////////
 // Input code
 int             leds_always_off = 0; // Expected by m_misc, not relevant
@@ -1648,7 +1653,19 @@ void I_SetWindowRect()
   SDL_GetWindowSize(sdl_window, &window_rect.w, &window_rect.h);
 
   if (V_IsOpenGLMode())
+  {
+#ifdef __ANDROID__
+    // GL renders into the OpenTouch framebuffer, not the SDL surface, so the viewport
+    // must be sized in framebuffer space or the letterbox path scales the HUD/menu up.
+    if (game_screen_width > 0 && game_screen_height > 0)
+    {
+      renderer_rect.w = game_screen_width;
+      renderer_rect.h = game_screen_height;
+      return;
+    }
+#endif
     SDL_GL_GetDrawableSize(sdl_window, &renderer_rect.w, &renderer_rect.h);
+  }
   else
     SDL_GetRendererOutputSize(sdl_renderer, &renderer_rect.w, &renderer_rect.h);
 }
